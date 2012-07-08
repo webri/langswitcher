@@ -7,7 +7,7 @@ Steps to get started (in short):
 --------------------------------
 
 1. Import langswitch.js
-2. Add langkey data-attribute to all relevant DOM elements
+2. Add `langkey` data-attribute to all relevant DOM elements
 3. Create xml files with content for each language
 4. Call `setLanguage()` whenever text needs to be switched 
   
