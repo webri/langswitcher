@@ -27,12 +27,12 @@ e.g. `<p data-langkey="website.content"></p>`
 
 4. Construct XML out of the keys you have used in step 2, child nodes are defined through dot syntax. For example:
 
-	<?xml version="1.0" encoding="UTF-8"?>  
-	<root>    
-		<website>  
-			<content>English Content 1</content>
-		</website>  
-	</root>  
+	<?xml version="1.0" encoding="UTF-8"?>
+	<root>  
+		<website>
+			<content>Content</content>
+		</website>
+	</root>
 
 5. Initialize langswitcher in the onload event of the body tag using
 `LangSwitcher.getInstance().setLanguage('XX')`
