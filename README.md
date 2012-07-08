@@ -2,18 +2,14 @@ Langswitcher
 ================
 
 JavaScript language switch that allows localization of text without reloading the page.
-   
-   
-    
+      
 Steps to get started (in short):
 --------------------------------
 
 1. Import langswitch.js
 2. Add langkey data-attribute to all relevant DOM elements
 3. Create xml files with content for each language
-4. Call setLanguage whenever text needs to be switched 
-  
-   
+4. Call `setLanguage()` whenever text needs to be switched 
   
 Steps to get started (in detail):
 ---------------------------------
@@ -46,8 +42,7 @@ e.g. `<p data-langkey="website.content"></p>`
   
 **Compatibility:**  
 Tested on Chrome, Firefox, IE8  
-
     
 Copyright (c) 2012 Britta Weiland  
 Version 0.2  
-License MIT (http://www.opensource.org/licenses/mit-license.html)
+License: MIT (http://www.opensource.org/licenses/mit-license.html)
