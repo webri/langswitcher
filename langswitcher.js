@@ -23,31 +23,53 @@
  * 
  */
 var LangSwitcher = (function () {
+    "use strict";
 
     var instantiated;
 
     // Singleton
     function init(){  
-        var path_language_files = "xml/languages/lang_"
+        var path_language_files = "xml/languages/lang_";
         var registered_elements = [];
+        
+        var loaded_languages = [];
+        var requested_language = "";
         var curr_language = "";
+        
         var curr_file_path = "";
         var asynch_elements = false;
         
         var setLanguage = function(lang){
-            if(lang != curr_language){
-                curr_language = lang;
-                curr_file_path = path_language_files + curr_language + ".xml"
+            if(lang !== curr_language){
+                requested_language = lang;
+                curr_file_path = path_language_files + lang + ".xml";
                 importXML(curr_file_path);
             }
         };
         
         var xmlDoc;
-        var xmlloaded = false;
 
         function importXML(xmlfile){
+          
+            // check if requested language was already loaded
+            var loaded_lang_len = loaded_languages.length;
+            for(var i = 0; i < loaded_lang_len; i++){
+                if(loaded_languages[i].lang === requested_language){
+                    // language has already been loaded, replace elements 
+                    // with xml from array
+                    curr_language = requested_language;
+                    requested_language = "";
+                    xmlDoc = loaded_languages[i].xml;
+                    replaceTextInElements();
+                    return;
+                }
+            }
+          
+            // language still needs to be loaded
+            // TODO: show preloader
+            var xmlhttp;
             try{
-                var xmlhttp = new XMLHttpRequest();
+                xmlhttp = new XMLHttpRequest();
                 xmlhttp.open("GET", xmlfile, false);
             }catch (Exception){
                 var ie = (typeof window.ActiveXObject != 'undefined');
@@ -57,25 +79,33 @@ var LangSwitcher = (function () {
                     xmlDoc.async = false;
                     while(xmlDoc.readyState != 4) {};
                     xmlDoc.load(xmlfile);
-                    readXML();
+                    xmlLoadingComplete();
                 }else{
                     xmlDoc = document.implementation.createDocument("", "", null);
-                    xmlDoc.onload = readXML;
+                    xmlDoc.onload = xmlLoadingComplete;
                     xmlDoc.load(xmlfile);
                 }
             }
 
-            if (!xmlloaded){
-                xmlhttp.setRequestHeader('Content-Type', 'text/xml')
-                xmlhttp.send("");
-                xmlDoc = xmlhttp.responseXML;
-                readXML();
-            }
+            xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+            xmlhttp.send("");
+            xmlDoc = xmlhttp.responseXML;
+            xmlLoadingComplete();
         }
 
 
-        function readXML(){
-            if(registered_elements.length == 0 || asynch_elements){
+        function xmlLoadingComplete(){
+            // new language has been loaded
+            curr_language = requested_language;
+            requested_language = "";
+            loaded_languages.push({"lang" : curr_language, "xml" : xmlDoc});
+            
+            replaceTextInElements();
+        }
+
+
+        function replaceTextInElements(){
+            if(registered_elements.length === 0 || asynch_elements){
                 registered_elements = document.querySelectorAll('[data-langkey]');
             }
                      
@@ -97,6 +127,7 @@ var LangSwitcher = (function () {
         }
 
 
+
         
         //////////////////////////
         /// PUBLIC 
@@ -113,17 +144,17 @@ var LangSwitcher = (function () {
             setAsynchElements:function(asynch){
                 asynch_elements = asynch;
             }
-        }
+        };
     }
     
     
     return {
-	    getInstance: function () {
-	      if ( !instantiated ) {
-	        instantiated = init();
-	      }
-	      return instantiated;
-	    }
-	  };
+        getInstance: function () {
+            if ( !instantiated ){
+                instantiated = init();
+            }
+            return instantiated;
+        }
+    };
       
 })();
